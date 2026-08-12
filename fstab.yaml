@@ -1,0 +1,7 @@
+mountpoints:
+  /:
+    # Sandbox local: o author do AEM SDK é a fonte de conteúdo.
+    # Em um projeto real isso aponta para o author do AEM as a Cloud Service.
+    url: "http://localhost:4502/bin/franklin.delivery/local/sandbox/main"
+    type: "markup"
+    suffix: ".html"
