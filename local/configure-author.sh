@@ -67,5 +67,29 @@ cat > "$INSTALL_DIR/com.adobe.granite.cors.impl.CORSPolicyImpl~universal-editor.
 JSON
 ok "CORSPolicy (origens do editor liberadas)"
 
+# O SDK local NÃO resolve os placeholders $[env:...] das configs de fábrica, então
+# o endpoint do Universal Editor tem que ser gravado explicitamente — senão o author
+# anuncia https://universal-editor-service.adobe.io, que não enxerga o seu localhost.
+cat > "$INSTALL_DIR/com.adobe.aem.wcm.franklin.internal.UniversalEditorSettings.cfg.json" <<JSON
+{
+  "endpoint": "https://localhost:${UES_PORT}",
+  "plugin": "xwalk"
+}
+JSON
+ok "UniversalEditorSettings (endpoint -> https://localhost:${UES_PORT})"
+
+# O editor roda em https; se o author for anunciado como http://localhost:4502 na
+# meta urn:adobe:aue:system:aemconnection, o browser bloqueia por mixed content.
+cat > "$INSTALL_DIR/com.day.cq.commons.impl.ExternalizerImpl.cfg.json" <<JSON
+{
+  "externalizer.domains": [
+    "local https://localhost:${AEM_TLS_PORT}",
+    "author https://localhost:${AEM_TLS_PORT}",
+    "publish https://localhost:${AEM_CLI_PORT}"
+  ]
+}
+JSON
+ok "Externalizer (author -> https://localhost:${AEM_TLS_PORT})"
+
 echo
 warn "se o author já estiver rodando, reinicie: npm run local:author:stop && npm run local:author"

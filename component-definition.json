@@ -83,6 +83,23 @@
       "id": "blocks",
       "components": [
         {
+          "title": "Aviso",
+          "id": "aviso",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Aviso",
+                  "model": "aviso",
+                  "tipo": "info",
+                  "texto": "<p>Escreva o aviso aqui.</p>"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Cards",
           "id": "cards",
           "plugins": {
@@ -128,6 +145,23 @@
           }
         },
         {
+          "title": "Countdown de Campanha",
+          "id": "countdown",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Countdown",
+                  "model": "countdown",
+                  "titulo": "A oferta termina em",
+                  "mensagemFim": "Campanha encerrada"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "plugins": {
@@ -143,6 +177,23 @@
           }
         },
         {
+          "title": "Hero Smart",
+          "id": "hero-smart",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Hero Smart",
+                  "model": "hero-smart",
+                  "titulo": "Um título que entrega o resultado",
+                  "texto": "<p>Uma frase que explica para quem é e por que importa.</p>"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Hero",
           "id": "hero",
           "plugins": {
@@ -152,6 +203,55 @@
                 "template": {
                   "name": "Hero",
                   "model": "hero"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Prova Social",
+          "id": "prova-social",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Prova Social",
+                  "model": "prova-social",
+                  "filter": "prova-social",
+                  "titulo": "Quem já confia na gente"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Logo de cliente",
+          "id": "prova-logo",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Logo",
+                  "model": "prova-logo"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Número em destaque",
+          "id": "prova-numero",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Número",
+                  "model": "prova-numero",
+                  "valor": "98%",
+                  "rotulo": "de satisfação"
                 }
               }
             }

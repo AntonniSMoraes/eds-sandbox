@@ -14,9 +14,9 @@ const DEFAULTS = {
   EDS_BRANCH: 'main',
   FRANKLIN_PROXY_PORT: '4503',
   UES_PORT: '8000',
-  UES_TLS_PORT: '8001',
   AEM_TLS_PORT: '8443',
   AEM_CLI_PORT: '3000',
+  DELIVERY_MODE: 'author',
   INJECT_HEAD: '1',
 };
 
@@ -29,7 +29,8 @@ function parseEnvFile(file) {
       .filter((line) => line && !line.startsWith('#') && line.includes('='))
       .map((line) => {
         const idx = line.indexOf('=');
-        return [line.slice(0, idx).trim(), line.slice(idx + 1).trim()];
+        const value = line.slice(idx + 1).trim().replace(/^(['"])(.*)\1$/, '$2');
+        return [line.slice(0, idx).trim(), value];
       }),
   );
 }
@@ -38,9 +39,18 @@ export function loadConfig() {
   return { ...DEFAULTS, ...parseEnvFile(resolve(projectRoot, '.env')), ...process.env };
 }
 
+/**
+ * author   -> /content/{site}, render do author: markup EDS COM a instrumentação
+ *             do Universal Editor (data-aue-* e as metas urn:adobe:aue:*).
+ * pipeline -> /bin/franklin.delivery, exatamente o que o aem.live consumiria.
+ *             Mesmo markup, mas SEM as metas do editor — serve para inspecionar
+ *             o que iria para a entrega, não para autorar.
+ */
 export function authorBase(cfg) {
-  return `http://localhost:${cfg.AEM_AUTHOR_PORT}/bin/franklin.delivery`
-    + `/${cfg.EDS_ORG}/${cfg.EDS_SITE}/${cfg.EDS_BRANCH}`;
+  const root = `http://localhost:${cfg.AEM_AUTHOR_PORT}`;
+  return cfg.DELIVERY_MODE === 'pipeline'
+    ? `${root}/bin/franklin.delivery/${cfg.EDS_ORG}/${cfg.EDS_SITE}/${cfg.EDS_BRANCH}`
+    : `${root}/content/${cfg.EDS_SITE}`;
 }
 
 export function basicAuth(cfg) {

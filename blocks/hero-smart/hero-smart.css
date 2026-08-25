@@ -1,0 +1,160 @@
+/*
+ * Hero Smart — Webjump Smart Components
+ * Nenhum valor cru: tudo vem de wj-tokens.css e é remapeado por wj-variants.css.
+ */
+
+.hero-smart {
+  display: grid;
+  gap: var(--wj-gap);
+  align-items: center;
+  padding: var(--wj-bloco-py) var(--wj-bloco-px);
+  box-shadow: var(--wj-sombra);
+}
+
+.hero-smart .hero-smart-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wj-e-4);
+  max-width: var(--wj-medida);
+}
+
+.hero-smart .hero-smart-chapeu {
+  font-size: var(--wj-t-s);
+  font-weight: var(--wj-peso-medio);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wj-tinta-suave);
+  margin: 0;
+}
+
+.hero-smart .hero-smart-titulo * {
+  font-family: var(--wj-fonte-titulo);
+  font-size: var(--wj-titulo-escala);
+  font-weight: var(--wj-peso-titulo);
+  line-height: var(--wj-altura-titulo);
+  color: var(--wj-tinta);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.hero-smart .hero-smart-texto {
+  font-size: var(--wj-t-m);
+  line-height: var(--wj-altura-texto);
+  color: var(--wj-tinta-suave);
+}
+
+.hero-smart .hero-smart-texto p {
+  margin: 0 0 var(--wj-e-3);
+}
+
+.hero-smart .hero-smart-texto p:last-child {
+  margin-bottom: 0;
+}
+
+.hero-smart .hero-smart-texto .button-wrapper {
+  display: inline-block;
+  margin: var(--wj-e-2) var(--wj-e-3) 0 0;
+}
+
+.hero-smart .hero-smart-texto a.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--wj-e-3) var(--wj-e-5);
+  border: 1px solid var(--wj-borda);
+  border-radius: var(--wj-raio-total);
+  background-color: transparent;
+  color: var(--wj-tinta);
+  font-size: var(--wj-t-s);
+  font-weight: var(--wj-peso-medio);
+  text-decoration: none;
+  transition: transform var(--wj-transicao), opacity var(--wj-transicao);
+}
+
+.hero-smart .hero-smart-texto a.button.primary,
+.hero-smart .hero-smart-texto a.button.accent {
+  border-color: transparent;
+  background-color: var(--wj-marca);
+  color: var(--wj-marca-tinta);
+}
+
+.hero-smart .hero-smart-texto a.button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.hero-smart .hero-smart-texto a.button:focus-visible {
+  outline: 2px solid var(--wj-foco);
+  outline-offset: 2px;
+}
+
+.hero-smart .hero-smart-midia img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--wj-raio-m);
+}
+
+/* Linhas que o autor deixou vazias não devem abrir espaço */
+.hero-smart .hero-smart-vazio {
+  display: none;
+}
+
+/* ---------- Variantes de layout do hero ---------- */
+
+.hero-smart.wj-hero-centro {
+  justify-items: center;
+  text-align: center;
+}
+
+.hero-smart.wj-hero-centro .hero-smart-conteudo {
+  align-items: center;
+}
+
+.hero-smart.wj-hero-fundo {
+  position: relative;
+  isolation: isolate;
+  min-height: 60vh;
+  overflow: hidden;
+}
+
+.hero-smart.wj-hero-fundo .hero-smart-midia {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero-smart.wj-hero-fundo .hero-smart-midia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.hero-smart.wj-hero-fundo .hero-smart-midia::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--wj-fundo) 12%, transparent 78%);
+}
+
+@media (width >= 900px) {
+  .hero-smart {
+    grid-template-columns: 1fr 1fr;
+    padding-inline: var(--wj-e-6);
+  }
+
+  .hero-smart.wj-hero-direita .hero-smart-midia {
+    order: 2;
+  }
+
+  .hero-smart.wj-hero-centro,
+  .hero-smart.wj-hero-fundo {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-smart.wj-hero-fundo .hero-smart-conteudo {
+    max-width: min(var(--wj-medida), 52%);
+  }
+}

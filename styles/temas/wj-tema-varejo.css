@@ -1,0 +1,73 @@
+/*
+ * Tema de exemplo: varejo / campanha
+ *
+ * Troca de marca = trocar o href do <link> no head.html por este arquivo.
+ * Nenhum bloco muda, nenhum deploy de componente, nenhum CSS novo.
+ *
+ * Regra: um tema só pode redefinir os tokens que já existem em wj-tokens.css.
+ * Se precisou de um token novo, ele nasce no arquivo base primeiro.
+ */
+
+:root {
+  /* Marca quente, alto contraste, senso de urgência */
+  --wj-marca: #e8340c;
+  --wj-marca-forte: #b32407;
+  --wj-marca-suave: #ffece7;
+  --wj-marca-tinta: #fff;
+
+  --wj-fundo: #fff;
+  --wj-fundo-alt: #fff5f2;
+  --wj-tinta: #1a1008;
+  --wj-tinta-suave: #6b5548;
+  --wj-borda: #f0ddd6;
+  --wj-foco: var(--wj-marca);
+
+  --wj-fonte: roboto, roboto-fallback, -apple-system, system-ui, sans-serif;
+  --wj-fonte-titulo: var(--wj-fonte);
+
+  --wj-t-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.83rem);
+  --wj-t-s: clamp(0.88rem, 0.85rem + 0.15vw, 0.95rem);
+  --wj-t-m: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+  --wj-t-g: clamp(1.3rem, 1.2rem + 0.5vw, 1.6rem);
+  --wj-t-xg: clamp(1.7rem, 1.4rem + 1.3vw, 2.4rem);
+  --wj-t-2xg: clamp(2.2rem, 1.6rem + 2.6vw, 3.6rem);
+  --wj-t-3xg: clamp(2.8rem, 1.8rem + 4vw, 5rem);
+
+  --wj-peso-normal: 400;
+  --wj-peso-medio: 600;
+  --wj-peso-forte: 800;
+  --wj-altura-titulo: 1.05;
+  --wj-altura-texto: 1.55;
+
+  --wj-e-1: 0.25rem;
+  --wj-e-2: 0.5rem;
+  --wj-e-3: 0.75rem;
+  --wj-e-4: 1rem;
+  --wj-e-5: 1.5rem;
+  --wj-e-6: 2rem;
+  --wj-e-7: 3rem;
+  --wj-e-8: 4.5rem;
+  --wj-bloco-py: var(--wj-e-6);
+  --wj-bloco-px: var(--wj-e-4);
+  --wj-gap: var(--wj-e-4);
+
+  /* Varejo pede forma mais dura e sombra mais presente */
+  --wj-raio-s: 2px;
+  --wj-raio-m: 4px;
+  --wj-raio-g: 8px;
+  --wj-raio-total: 4px;
+  --wj-sombra-s: 0 1px 2px rgb(60 20 8 / 8%);
+  --wj-sombra-m: 0 4px 14px rgb(60 20 8 / 12%);
+  --wj-sombra-g: 0 14px 40px rgb(60 20 8 / 18%);
+  --wj-sombra: none;
+
+  --wj-transicao: 140ms cubic-bezier(0.2, 0, 0.2, 1);
+  --wj-largura-max: 1240px;
+  --wj-medida: 58ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --wj-transicao: 1ms;
+  }
+}

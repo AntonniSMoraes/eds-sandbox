@@ -9,6 +9,7 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  toClassName,
 } from './aem.js';
 
 /**
@@ -114,12 +115,85 @@ export function decorateButtons(main) {
  * @param {Element} main The main element
  */
 // eslint-disable-next-line import/prefer-default-export
+/*
+ * Webjump Smart Components — guarda dos eixos de variante.
+ *
+ * O campo `classes` é um multiselect: nada impede o autor de marcar duas cores.
+ * Nesse caso quem decide é a ordem do CSS, não a intenção de quem editou —
+ * o autor marca "clara" e "neutra" e recebe a que estiver por último na folha.
+ *
+ * Aqui vale a última escolha do autor (a ordem do array é a ordem de seleção),
+ * que é o que um multiselect sugere. As demais do mesmo eixo são removidas.
+ * Roda uma vez por página, sem custo por bloco.
+ */
+const EIXOS = [
+  ['wj-r-impacto', 'wj-r-lancamento', 'wj-r-institucional', 'wj-r-editorial', 'wj-r-discreto'],
+  ['wj-claro', 'wj-neutro', 'wj-escuro', 'wj-marca'],
+  ['wj-compacto', 'wj-espacoso'],
+  ['wj-sutil', 'wj-destaque'],
+  ['wj-sec-2col', 'wj-sec-3col', 'wj-sec-4col', 'wj-sec-assimetrico', 'wj-sec-bento', 'wj-sec-sobreposto'],
+  ['wj-sec-meia', 'wj-sec-tela'],
+  ['wj-sec-centro', 'wj-sec-base'],
+  ['wj-sec-escurecer', 'wj-sec-clarear'],
+];
+
+/*
+ * Seção como "Bloco Livre": imagem de fundo e âncora.
+ *
+ * O decorateSections do aem.js já transformou o section metadata em classes e
+ * em data-*. Aqui só damos destino aos dois valores que não são classe.
+ *
+ * A imagem de fundo REAPROVEITA o <picture> que o metadata já trouxe, em vez de
+ * virar background-image via CSS: mantém o srcset responsivo do EDS e evita
+ * baixar o mesmo arquivo duas vezes.
+ */
+export function decorateCanvasSections(main) {
+  main.querySelectorAll('.section[data-fundo]').forEach((section) => {
+    const original = section.querySelector('picture');
+    const fundo = document.createElement('div');
+    fundo.className = 'wj-sec-fundo';
+    fundo.setAttribute('aria-hidden', 'true');
+
+    if (original) {
+      fundo.append(original);
+    } else {
+      const img = document.createElement('img');
+      img.src = section.dataset.fundo;
+      img.alt = '';
+      img.loading = 'lazy';
+      fundo.append(img);
+    }
+    section.prepend(fundo);
+    delete section.dataset.fundo;
+  });
+
+  main.querySelectorAll('.section[data-ancora]').forEach((section) => {
+    section.id = toClassName(section.dataset.ancora);
+    delete section.dataset.ancora;
+  });
+}
+
+export function normalizeVariants(main) {
+  main.querySelectorAll('[class*="wj-"]').forEach((el) => {
+    EIXOS.forEach((eixo) => {
+      const marcadas = eixo.filter((c) => el.classList.contains(c));
+      if (marcadas.length > 1) {
+        const ordem = [...el.classList];
+        const vencedora = marcadas.reduce((a, b) => (ordem.indexOf(b) > ordem.indexOf(a) ? b : a));
+        marcadas.filter((c) => c !== vencedora).forEach((c) => el.classList.remove(c));
+      }
+    });
+  });
+}
+
 export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
+  normalizeVariants(main);
+  decorateCanvasSections(main);
 }
 
 /**

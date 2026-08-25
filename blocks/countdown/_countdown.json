@@ -1,0 +1,88 @@
+{
+  "definitions": [
+    {
+      "title": "Countdown de Campanha",
+      "id": "countdown",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Countdown",
+              "model": "countdown",
+              "titulo": "A oferta termina em",
+              "mensagemFim": "Campanha encerrada"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "countdown",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Estilo",
+          "valueType": "string",
+          "description": "Escolha um estilo. Não escolher nada faz o bloco herdar o ambiente da seção. Os itens de formato são ajuste opcional",
+          "options": [
+            {
+              "name": "Impacto — campanha, escuro e imponente",
+              "value": "wj-r-impacto"
+            },
+            {
+              "name": "Lançamento — cor da marca, alto contraste",
+              "value": "wj-r-lancamento"
+            },
+            {
+              "name": "Institucional — claro e equilibrado",
+              "value": "wj-r-institucional"
+            },
+            {
+              "name": "Editorial — claro, arejado, para leitura",
+              "value": "wj-r-editorial"
+            },
+            {
+              "name": "Discreto — neutro e compacto",
+              "value": "wj-r-discreto"
+            },
+            {
+              "name": "Formato: em linha",
+              "value": "wj-countdown-linha"
+            },
+            {
+              "name": "Formato: faixa fixa no topo",
+              "value": "wj-countdown-fixo"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "titulo",
+          "label": "Chamada",
+          "valueType": "string",
+          "description": "Ex.: A oferta termina em"
+        },
+        {
+          "component": "date-time",
+          "name": "alvo",
+          "label": "Data e hora do fim",
+          "valueType": "date",
+          "required": true,
+          "description": "Quando o contador zera. Usa o fuso do visitante"
+        },
+        {
+          "component": "text",
+          "name": "mensagemFim",
+          "label": "Mensagem após o fim",
+          "valueType": "string",
+          "description": "O que aparece no lugar do contador quando a campanha encerra"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

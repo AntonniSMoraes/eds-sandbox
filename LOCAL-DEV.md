@@ -7,20 +7,23 @@ sem document-based authoring e sem AEM as a Cloud Service.
 
 ```
  browser ──► https://localhost:3000        aem up (aem-cli)
-                    │                      serve blocks/, styles/, scripts/ do disco
+                    │                      serve blocks/, styles/, scripts/ do disco (hot reload)
                     │                      e proxeia o resto
                     ▼
              http://localhost:4503         local/franklin-proxy.mjs
-                    │                      /produtos/foo → /bin/franklin.delivery/{org}/{site}/{branch}/produtos/foo.html
-                    ▼
+                    │       ▲              / → /content/{site}/index.html
+                    │       │              reescreve /content/{site}.resource/* → /*
+                    │       │              e serve o "code bus" do disco
+                    ▼       │
              http://localhost:4502         AEM SDK author (conteúdo no JCR)
-                    ▲
+                    ▲                      component-models.json & cia ──┘
                     │
- experience.adobe.com/#/aem/editor ──► https://localhost:8001 ──► :8000
-             (UI do editor)              tls-proxy              Universal Editor Service local
+ experience.adobe.com/#/aem/editor ──► https://localhost:8000 ──► https://localhost:8443
+             (UI do editor)            Universal Editor Service     author em https (tls-proxy)
 ```
 
-Portas: `3000` site · `4502` author · `4503` proxy de entrega · `8000/8001` UE service · `8443` author em https.
+Portas: `3000` site · `3002` site em http (opcional) · `4502` author ·
+`4503` proxy + code bus · `8000` UE service · `8443` author em https.
 
 ## O que roda local e o que não roda
 
@@ -39,76 +42,123 @@ mas ela roda no seu browser e conversa com o **UE service local**, que conversa 
 ## Setup
 
 ```bash
-npm run local:setup
-```
-
-Cria `.env`, instala deps, configura o git remote (o `aem up` exige um `origin`),
-gera os certificados TLS e grava as OSGi configs em `crx-quickstart/install/`:
-
-- `SlingMainServlet` — remove `X-Frame-Options: SAMEORIGIN` (senão o editor não
-  consegue carregar a página no iframe)
-- `ReferrerFilter` — libera `localhost` e `experience.adobe.com` para POST/PATCH
-- `CORSPolicyImpl~universal-editor` — libera as origens do editor
-
-Depois:
-
-```bash
-npm run local:author          # sobe o AEM SDK (1º boot demora)
-npm run local:site-template   # baixa o zip do site template e mostra como importar
+npm run local:setup            # .env, deps, git, certs, OSGi configs
+npm run local:author           # sobe o AEM SDK (1º boot demora)
+npm run local:site-template    # baixa o site template do xwalk
 ```
 
 Importe o site no author (`Sites > Create > Site from template > Import`) usando
-**org/repo iguais a `EDS_ORG`/`EDS_SITE` do `.env`** — é isso que o
-`/bin/franklin.delivery/{org}/{site}/{branch}` resolve. Errou aqui, dá 404.
+**org/repo iguais a `EDS_ORG`/`EDS_SITE` do `.env`**.
 
-Por fim, baixe o `universal-editor-service.cjs` em
+O mesmo pode ser feito por API, que é como este sandbox foi montado:
+
+```bash
+curl -u admin:admin -F "file=@local/downloads/aem-sites-*.zip" \
+  http://localhost:4502/bin/wcm/site-template/import
+
+curl -u admin:admin -X POST http://localhost:4502/bin/asynccommand \
+  -F operation=asyncCreateSiteFromSiteTemplate \
+  -F siteName=sandbox -F siteTitle=Sandbox \
+  -F gitHubUrl=https://github.com/local/sandbox \
+  -F siteTemplatePath=/conf/global/site-templates/aem-sites-with-edge-delivery-services-template-0.2.0
+```
+
+Com o site criado, o dia a dia é um comando só:
+
+```bash
+npm run dev
+```
+
+E, para autorar, baixe o `universal-editor-service.cjs` em
 [Software Distribution](https://experience.adobe.com/downloads) (AEM as a Cloud Service →
-Universal Editor Service) e coloque em `local/universal-editor-service/`.
-O binário não é redistribuível, por isso não vem no repo.
+Universal Editor Service), coloque em `local/universal-editor-service/` e rode
+`npm run local:ue`. O binário não é redistribuível, por isso não vem no repo.
 
 ## Dia a dia
 
 ```bash
-npm run local:author   # terminal 1 (deixa rodando)
-npm run local:ue       # terminal 2
-npm start              # terminal 3 — franklin-proxy + tls-proxy + aem up
-npm run local:open     # abre o editor e lista as URLs
+npm run dev
 ```
+
+Um terminal. O comando sobe o author se estiver parado (ele é daemon, não ocupa
+terminal), reaplica a configuração do site, e roda proxy, tls, UE service e `aem up`
+como filhos com log prefixado. `Ctrl+C` derruba os quatro; o author fica de pé.
 
 No editor, cole `https://localhost:3000/` no campo **Site URL**.
 
-Editar `blocks/**/*.js|css` recarrega na hora. Editar conteúdo no editor exige
-refresh da página (não tem pipeline de preview local).
+`npm run local:doctor` diagnostica, `npm run local:open` abre o editor.
+Os scripts `local:*` continuam existindo para rodar cada peça isolada.
 
-Diagnóstico de qualquer coisa quebrada:
+Para só olhar o site sem lidar com o certificado self-signed:
+`npm run local:web:http` → `http://localhost:3002/`.
 
-```bash
-npm run local:doctor
-```
+## As três amarrações que fazem isso funcionar
 
-## Blocos
+Nada disso é padrão — são as adaptações que substituem o pipeline do aem.live.
 
-Fluxo normal do xwalk: crie o bloco em `blocks/<nome>/` e o modelo em
-`models/_<nome>.json`, referenciando-o em `models/_component-definition.json`,
-`_component-models.json` e `_component-filters.json`. O hook de pre-commit
-(husky) compila os `component-*.json` da raiz — ou rode `npm run build:json`.
+**1. O code bus.** O author busca `component-models.json`, `component-definition.json`
+e `component-filters.json` em `https://{branch}--{repo}--{owner}.aem.page`. Como esse
+site não existe no aem.live, o render estoura
+`500 CodeBusInfoException: Component Models could not be loaded`.
+A cloud config do site tem uma propriedade `url` que **sobrescreve** essa origem —
+`local:configure:site` aponta ela para o próprio proxy, que serve esses arquivos do
+disco. Sem isso, nada renderiza.
 
-Sem o modelo o bloco existe no site mas não aparece no editor.
+**2. `/content/{site}` e não `/bin/franklin.delivery`.** O endpoint de entrega
+(`/bin/franklin.delivery/{org}/{site}/{branch}/index.html`) é o que o pipeline consome,
+e ele **remove as meta tags do Universal Editor**. O render do author
+(`/content/{site}/index.html`) traz o mesmo markup EDS **com** `data-aue-*` e as metas
+`urn:adobe:aue:*`. É esse que o proxy serve. Para inspecionar o markup do pipeline,
+troque `DELIVERY_MODE=pipeline` no `.env`.
+
+**3. Reescrita do `.resource`.** O author referencia o código como
+`/content/{site}.resource/scripts/aem.js`. O proxy reescreve para `/scripts/aem.js`,
+e aí quem serve é o `aem up` — ou seja, o seu working copy com hot reload.
+Assets do DAM (`/content/dam/...`) passam direto para o author.
 
 ## Armadilhas conhecidas
 
-- **`aem up` exige `git remote origin`** mesmo com `--url`. O setup cria um
-  placeholder; troque quando criar o repo real.
-- **Certificado self-signed**: o browser reclama em `https://localhost:3000`.
-  Aceite a exceção uma vez, ou instale o `mkcert` (`brew install mkcert`) e
-  rode `npm run local:certs` de novo para um cert confiável.
-- **404 em `/bin/franklin.delivery/...`**: org/site do `.env` não batem com os do
-  site criado no author, ou o site não foi criado.
-- **Editor não abre a página**: quase sempre é `X-Frame-Options` ou CORS — confira
-  que `npm run local:configure` rodou e que o author foi reiniciado depois.
-- **`head.html`**: o author local não tem code bus, então o HTML dele pode vir sem
-  as tags de script do EDS. O `franklin-proxy` injeta o `head.html` do repo quando
-  detecta que faltam (`INJECT_HEAD=1`).
-- O `AEM_XWALK_AUE_ENDPOINT` é exportado pelo `local/author.sh`; se você subir o
-  author por fora, o editor vai tentar falar com o UE service hospedado da Adobe,
-  que não enxerga o seu `localhost`.
+- **O botão "Editar" do console de Sites local dá 404** ("A custom errorhandler for
+  404 responses"). Não é configuração: o console navega via unified shell, que reescreve
+  tudo para `/ui#/aem/...`, e o `/ui` **não existe no SDK local** — a UI do editor é
+  hospedada pela Adobe, não vem no quickstart. Autore sempre pelo editor hospedado:
+  `npm run local:open` → `https://experience.adobe.com/#/aem/editor` → cole
+  `https://localhost:3000/` no campo **Site URL**.
+- **`aem up` exige `git remote origin`** mesmo com `--url`. O setup cria um placeholder.
+- **O SDK local não resolve `$[env:...]`** nas configs de fábrica. Por isso o endpoint
+  do UE é gravado via configMgr pelo `local:configure:site`, e não pela variável
+  `AEM_XWALK_AUE_ENDPOINT`.
+- **Certificado self-signed**: o browser reclama em `https://localhost:3000` e o
+  Universal Editor não consegue carregar a página no iframe (mostra "está demorando
+  mais que o esperado para responder"). Instale o mkcert (`brew install mkcert`),
+  rode `mkcert -install` (pede senha) e `npm run local:certs`. Para autorar isso é
+  obrigatório, não cosmético.
+- **`UES_CORS_PRIVATE_NETWORK=true`** no `.env` do UE service: sem ele o browser
+  bloqueia por Private Network Access as chamadas de `experience.adobe.com` (rede
+  pública) para o `localhost` (rede privada). O `local:ue` já escreve isso.
+- **`error while loading head.html ... 404` no log do aem up**: esperado. O author
+  já entrega o head completo; não há head.html remoto para o aem up comparar.
+- **`https://universal-editor-service.adobe.io/cors.js`** aparece no markup e é
+  hardcoded no bundle do AEM. É um script auxiliar de CORS, não o serviço do editor —
+  o serviço é o da meta `urn:adobe:aue:config:service`.
+- **404 no site**: `EDS_ORG`/`EDS_SITE` do `.env` não batem com o site criado no author.
+- **Externalizer**: o author precisa se anunciar como `https://localhost:8443` na meta
+  `urn:adobe:aue:system:aemconnection`. Em `http://localhost:4502` o browser bloquearia
+  por mixed content, já que o editor roda em https. O `local:configure` grava isso.
+- **`/config.json`**: é gerado pelo pipeline e não existe no repo. O proxy devolve `{}`
+  para o author parar de reconsultar em loop.
+- **401 no `POST https://localhost:8000/details`**: são dois problemas juntos, e os
+  dois são inerentes a autorar contra um author local.
+  1. O editor manda um token IMS emitido para a nuvem da Adobe, que o UE service não
+     consegue validar contra `localhost`. Daí `UES_DISABLE_IMS_VALIDATION=true` no
+     `.env` do serviço (o `local:ue` escreve).
+  2. O editor manda `x-aemconnection-authorization` **vazio** — ele só sabe emitir
+     token para instâncias na nuvem. O UE service repassa esse vazio ao AEM e leva
+     401. Por isso o `tls-proxy` injeta `Authorization: Basic admin:admin` em tudo
+     que passa pela `8443`. É seguro no sandbox: a porta escuta só em `127.0.0.1`,
+     e a credencial é a mesma `admin/admin` do SDK.
+
+## Blocos e autoria
+
+O passo a passo de autorar e de criar/testar bloco está em [WORKFLOW.md](WORKFLOW.md),
+com o bloco `aviso` no repo como exemplo completo.

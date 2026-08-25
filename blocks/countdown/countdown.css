@@ -1,0 +1,125 @@
+/*
+ * Countdown de Campanha — Webjump Smart Components
+ * Nenhum valor cru: tudo vem de wj-tokens.css e é remapeado por wj-variants.css.
+ */
+
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--wj-e-4);
+  padding: var(--wj-bloco-py) var(--wj-bloco-px);
+  box-shadow: var(--wj-sombra);
+  text-align: center;
+}
+
+.countdown .countdown-chamada {
+  margin: 0;
+  font-size: var(--wj-t-s);
+  font-weight: var(--wj-peso-medio);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wj-tinta-suave);
+}
+
+.countdown .countdown-relogio {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--wj-gap);
+}
+
+.countdown .countdown-unidade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--wj-e-1);
+  min-width: 4.5rem;
+  padding: var(--wj-e-3) var(--wj-e-4);
+  border: 1px solid var(--wj-borda);
+  border-radius: var(--wj-raio-m);
+  background-color: var(--wj-fundo-alt);
+}
+
+.countdown .countdown-valor {
+  font-family: var(--wj-fonte-titulo);
+  font-size: var(--wj-titulo-escala);
+  font-weight: var(--wj-peso-titulo);
+  line-height: var(--wj-altura-titulo);
+  color: var(--wj-tinta);
+
+  /* Evita o texto "pular" de largura a cada segundo */
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown .countdown-rotulo {
+  font-size: var(--wj-t-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wj-tinta-suave);
+}
+
+.countdown .countdown-fim {
+  margin: 0;
+  font-size: var(--wj-t-g);
+  font-weight: var(--wj-peso-medio);
+  color: var(--wj-tinta);
+}
+
+.countdown .countdown-fim:empty {
+  display: none;
+}
+
+.countdown.countdown-sem-data {
+  display: none;
+}
+
+/* ---------- Formato: em linha ---------- */
+
+.countdown.wj-countdown-linha {
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.countdown.wj-countdown-linha .countdown-unidade {
+  flex-direction: row;
+  gap: var(--wj-e-2);
+  align-items: baseline;
+  min-width: 0;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+}
+
+.countdown.wj-countdown-linha .countdown-valor {
+  font-size: var(--wj-t-g);
+}
+
+/* ---------- Formato: faixa fixa no topo ---------- */
+
+.countdown.wj-countdown-fixo {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding-block: var(--wj-e-3);
+}
+
+.countdown.wj-countdown-fixo .countdown-unidade {
+  flex-direction: row;
+  gap: var(--wj-e-2);
+  align-items: baseline;
+  min-width: 0;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+}
+
+.countdown.wj-countdown-fixo .countdown-valor {
+  font-size: var(--wj-t-m);
+}
+
+.countdown.wj-countdown-fixo .countdown-chamada {
+  align-self: center;
+}

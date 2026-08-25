@@ -1,0 +1,21 @@
+.aviso {
+  border-left: 4px solid;
+  padding: 16px 20px;
+  margin: 24px 0;
+  border-radius: 4px;
+}
+
+.aviso .aviso-texto p {
+  margin: 0;
+}
+
+.aviso.aviso-info {
+  border-color: #1473e6;
+  background-color: #edf4fe;
+}
+
+.aviso.aviso-atencao {
+  border-color: #d7373f;
+  background-color: #fdefef;
+}
+

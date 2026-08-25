@@ -15,7 +15,11 @@
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "hero-smart",
+      "prova-social",
+      "countdown",
+      "aviso"
     ]
   },
   {
@@ -37,6 +41,13 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "prova-social",
+    "components": [
+      "prova-logo",
+      "prova-numero"
     ]
   }
 ]

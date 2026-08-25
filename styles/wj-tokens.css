@@ -1,0 +1,79 @@
+/*
+ * Webjump Smart Components — camada 1: tokens
+ *
+ * Este é o ÚNICO arquivo que se troca para mudar de marca ou de campanha.
+ * Nenhum bloco pode conter valor cru: cor, espaço, raio e tipografia sempre
+ * vêm daqui. É o que permite trocar tema sem deploy de código.
+ */
+
+:root {
+  /* --- Cor: paleta da marca --- */
+  --wj-marca: #0d6efd;
+  --wj-marca-forte: #0a58ca;
+  --wj-marca-suave: #e7f0ff;
+  --wj-marca-tinta: #fff;
+
+  /* --- Cor: papéis semânticos (o que os blocos consomem) --- */
+  --wj-fundo: #fff;
+  --wj-fundo-alt: #f5f6f8;
+  --wj-tinta: #16181d;
+  --wj-tinta-suave: #5b6270;
+  --wj-borda: #e2e5ea;
+  --wj-foco: var(--wj-marca);
+
+  /* --- Tipografia --- */
+  --wj-fonte: roboto, roboto-fallback, -apple-system, system-ui, sans-serif;
+  --wj-fonte-titulo: var(--wj-fonte);
+
+  /* Escala fluida: responsiva sem media query por instância */
+  --wj-t-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.83rem);
+  --wj-t-s: clamp(0.88rem, 0.85rem + 0.15vw, 0.95rem);
+  --wj-t-m: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+  --wj-t-g: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --wj-t-xg: clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+  --wj-t-2xg: clamp(2rem, 1.5rem + 2.4vw, 3.25rem);
+  --wj-t-3xg: clamp(2.4rem, 1.6rem + 3.6vw, 4.5rem);
+  --wj-peso-normal: 400;
+  --wj-peso-medio: 500;
+  --wj-peso-forte: 700;
+  --wj-altura-titulo: 1.1;
+  --wj-altura-texto: 1.6;
+
+  /* --- Espaçamento: escala única --- */
+  --wj-e-1: 0.25rem;
+  --wj-e-2: 0.5rem;
+  --wj-e-3: 0.75rem;
+  --wj-e-4: 1rem;
+  --wj-e-5: 1.5rem;
+  --wj-e-6: 2rem;
+  --wj-e-7: 3rem;
+  --wj-e-8: 4.5rem;
+
+  /* Ritmo vertical do bloco — a densidade remapeia estes dois */
+  --wj-bloco-py: var(--wj-e-7);
+  --wj-bloco-px: var(--wj-e-5);
+  --wj-gap: var(--wj-e-5);
+
+  /* --- Forma --- */
+  --wj-raio-s: 4px;
+  --wj-raio-m: 10px;
+  --wj-raio-g: 20px;
+  --wj-raio-total: 999px;
+  --wj-sombra-s: 0 1px 2px rgb(16 24 40 / 6%);
+  --wj-sombra-m: 0 4px 16px rgb(16 24 40 / 8%);
+  --wj-sombra-g: 0 16px 48px rgb(16 24 40 / 14%);
+  --wj-sombra: none;
+
+  /* --- Movimento --- */
+  --wj-transicao: 180ms cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* --- Layout --- */
+  --wj-largura-max: 1200px;
+  --wj-medida: 62ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --wj-transicao: 1ms;
+  }
+}

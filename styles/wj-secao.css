@@ -1,0 +1,181 @@
+/*
+ * Webjump Smart Components — camada 3b: motor de seção ("Bloco Livre")
+ *
+ * É aqui que o autor monta estrutura sem desenvolvedor. A seção do EDS já é um
+ * container que aceita qualquer bloco; o que faltava era controle de layout.
+ * Cada opção de "Montagem da seção" vira uma classe aqui, via section metadata.
+ *
+ * Mesma regra do wj-variants.css: a variante remapeia token e organiza os
+ * filhos. Ela nunca conhece o bloco que está dentro — por isso qualquer bloco,
+ * atual ou futuro, entra em qualquer layout.
+ */
+
+/* O EDS embrulha cada bloco/conteúdo da seção num *-wrapper e é nele que mora a
+   largura máxima do conteúdo. Ao virar grid com `display: contents`, esse limite
+   se perde — então ele volta para a própria seção. */
+.section[class*="wj-sec-"] > div {
+  margin: 0;
+}
+
+.section.wj-sec-2col,
+.section.wj-sec-3col,
+.section.wj-sec-4col,
+.section.wj-sec-assimetrico,
+.section.wj-sec-bento,
+.section.wj-sec-sobreposto {
+  max-width: var(--wj-largura-max);
+  margin-inline: auto;
+}
+
+/* ---------- Layout dos blocos filhos ---------- */
+
+/* Os *-wrapper somem para os blocos virarem itens do grid. O :not() é
+   essencial: sem ele a camada de fundo também perderia a caixa, o
+   position: absolute seria ignorado e a imagem viraria mais um item da grade. */
+.section.wj-sec-2col > div:not(.wj-sec-fundo),
+.section.wj-sec-3col > div:not(.wj-sec-fundo),
+.section.wj-sec-4col > div:not(.wj-sec-fundo),
+.section.wj-sec-assimetrico > div:not(.wj-sec-fundo),
+.section.wj-sec-bento > div:not(.wj-sec-fundo) {
+  display: contents;
+}
+
+.section.wj-sec-2col,
+.section.wj-sec-3col,
+.section.wj-sec-4col,
+.section.wj-sec-assimetrico,
+.section.wj-sec-bento {
+  display: grid;
+  gap: var(--wj-gap);
+  align-items: start;
+}
+
+.section.wj-sec-sobreposto {
+  display: grid;
+  place-items: center center;
+}
+
+.section.wj-sec-sobreposto > div:not(.wj-sec-fundo) > * {
+  grid-area: 1 / 1;
+  width: 100%;
+}
+
+@media (width >= 900px) {
+  .section.wj-sec-2col { grid-template-columns: repeat(2, 1fr); }
+  .section.wj-sec-3col { grid-template-columns: repeat(3, 1fr); }
+  .section.wj-sec-4col { grid-template-columns: repeat(4, 1fr); }
+  .section.wj-sec-assimetrico { grid-template-columns: 3fr 2fr; }
+
+  .section.wj-sec-bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section.wj-sec-bento > div > *:first-child {
+    grid-column: span 2;
+  }
+}
+
+/* ---------- Largura e altura ---------- */
+
+.section.wj-sec-total {
+  max-width: none;
+  padding-inline: 0;
+}
+
+.section.wj-sec-meia {
+  min-height: 50vh;
+}
+
+.section.wj-sec-tela {
+  min-height: 100vh;
+}
+
+.section.wj-sec-meia,
+.section.wj-sec-tela {
+  display: grid;
+  align-content: start;
+}
+
+.section.wj-sec-centro {
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.section.wj-sec-base {
+  align-content: end;
+}
+
+/* ---------- Imagem de fundo ---------- */
+
+.section .wj-sec-fundo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.section .wj-sec-fundo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Só a seção com fundo vira contexto de empilhamento — as outras seguem
+   no fluxo normal, sem custo. */
+.section:has(> .wj-sec-fundo) {
+  position: relative;
+  isolation: isolate;
+}
+
+/* O :not() aqui não é decoração: esta regra tem especificidade maior que a do
+   .wj-sec-fundo e, sem ele, sobrescreveria o position: absolute da camada de
+   fundo, jogando a imagem de volta para o fluxo. */
+.section:has(> .wj-sec-fundo) > div:not(.wj-sec-fundo) {
+  position: relative;
+  z-index: 1;
+}
+
+.section.wj-sec-escurecer .wj-sec-fundo::after,
+.section.wj-sec-clarear .wj-sec-fundo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.section.wj-sec-escurecer .wj-sec-fundo::after {
+  background-color: rgb(0 0 0 / 45%);
+}
+
+.section.wj-sec-clarear .wj-sec-fundo::after {
+  background-color: rgb(255 255 255 / 55%);
+}
+
+.section.wj-sec-fundo-fixo .wj-sec-fundo {
+  position: fixed;
+  clip-path: inset(0);
+}
+
+/* ---------- Moldura ---------- */
+
+.section.wj-sec-cantos {
+  border-radius: var(--wj-raio-g);
+  overflow: hidden;
+}
+
+.section.wj-sec-sombra {
+  box-shadow: var(--wj-sombra-m);
+}
+
+/* ---------- Espaçamento vindo dos eixos ---------- */
+
+.section[class*="wj-"] {
+  padding-block: var(--wj-bloco-py);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section.wj-sec-fundo-fixo .wj-sec-fundo {
+    position: absolute;
+  }
+}

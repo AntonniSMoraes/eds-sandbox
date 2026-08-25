@@ -125,19 +125,155 @@
       {
         "component": "text",
         "name": "name",
-        "label": "Section Name",
-        "description": "The label shown for this section in the Content Tree"
+        "label": "Nome da seção",
+        "description": "Como ela aparece na árvore de conteúdo"
       },
       {
         "component": "multiselect",
         "name": "style",
-        "label": "Style",
+        "label": "Montagem da seção",
+        "description": "Escolha como os blocos se organizam, a cor, o espaço e a altura. Qualquer combinação funciona",
         "options": [
           {
-            "name": "Highlight",
-            "value": "highlight"
+            "name": "Layout: lado a lado (2 colunas)",
+            "value": "wj-sec-2col"
+          },
+          {
+            "name": "Layout: 3 colunas",
+            "value": "wj-sec-3col"
+          },
+          {
+            "name": "Layout: 4 colunas",
+            "value": "wj-sec-4col"
+          },
+          {
+            "name": "Layout: assimétrico (60/40)",
+            "value": "wj-sec-assimetrico"
+          },
+          {
+            "name": "Layout: bento (primeiro maior)",
+            "value": "wj-sec-bento"
+          },
+          {
+            "name": "Layout: sobreposto (um sobre o outro)",
+            "value": "wj-sec-sobreposto"
+          },
+          {
+            "name": "Cor: clara",
+            "value": "wj-claro"
+          },
+          {
+            "name": "Cor: neutra",
+            "value": "wj-neutro"
+          },
+          {
+            "name": "Cor: escura",
+            "value": "wj-escuro"
+          },
+          {
+            "name": "Cor: marca",
+            "value": "wj-marca"
+          },
+          {
+            "name": "Espaço: compacto",
+            "value": "wj-compacto"
+          },
+          {
+            "name": "Espaço: espaçoso",
+            "value": "wj-espacoso"
+          },
+          {
+            "name": "Ênfase: sutil",
+            "value": "wj-sutil"
+          },
+          {
+            "name": "Ênfase: destaque",
+            "value": "wj-destaque"
+          },
+          {
+            "name": "Largura: ocupa a tela inteira",
+            "value": "wj-sec-total"
+          },
+          {
+            "name": "Altura: meia tela",
+            "value": "wj-sec-meia"
+          },
+          {
+            "name": "Altura: tela cheia",
+            "value": "wj-sec-tela"
+          },
+          {
+            "name": "Alinhamento: ao centro",
+            "value": "wj-sec-centro"
+          },
+          {
+            "name": "Alinhamento: ao rodapé",
+            "value": "wj-sec-base"
+          },
+          {
+            "name": "Fundo: escurecer",
+            "value": "wj-sec-escurecer"
+          },
+          {
+            "name": "Fundo: clarear",
+            "value": "wj-sec-clarear"
+          },
+          {
+            "name": "Fundo: fixo ao rolar",
+            "value": "wj-sec-fundo-fixo"
+          },
+          {
+            "name": "Moldura: cantos arredondados",
+            "value": "wj-sec-cantos"
+          },
+          {
+            "name": "Moldura: com sombra",
+            "value": "wj-sec-sombra"
           }
         ]
+      },
+      {
+        "component": "reference",
+        "name": "fundo",
+        "label": "Imagem de fundo",
+        "multi": false,
+        "description": "Opcional. Combine com 'Fundo: escurecer' para o texto continuar legível"
+      },
+      {
+        "component": "text",
+        "name": "ancora",
+        "label": "Âncora",
+        "valueType": "string",
+        "description": "Opcional. Vira o id da seção, para links de menu. Ex.: planos"
+      }
+    ]
+  },
+  {
+    "id": "aviso",
+    "fields": [
+      {
+        "component": "select",
+        "name": "tipo",
+        "label": "Tipo",
+        "valueType": "string",
+        "value": "info",
+        "options": [
+          {
+            "name": "Informação",
+            "value": "info"
+          },
+          {
+            "name": "Atenção",
+            "value": "atencao"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "texto",
+        "label": "Texto",
+        "valueType": "string",
+        "value": ""
       }
     ]
   },
@@ -180,12 +316,151 @@
     ]
   },
   {
+    "id": "countdown",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Estilo",
+        "valueType": "string",
+        "description": "Escolha um estilo. Não escolher nada faz o bloco herdar o ambiente da seção. Os itens de formato são ajuste opcional",
+        "options": [
+          {
+            "name": "Impacto — campanha, escuro e imponente",
+            "value": "wj-r-impacto"
+          },
+          {
+            "name": "Lançamento — cor da marca, alto contraste",
+            "value": "wj-r-lancamento"
+          },
+          {
+            "name": "Institucional — claro e equilibrado",
+            "value": "wj-r-institucional"
+          },
+          {
+            "name": "Editorial — claro, arejado, para leitura",
+            "value": "wj-r-editorial"
+          },
+          {
+            "name": "Discreto — neutro e compacto",
+            "value": "wj-r-discreto"
+          },
+          {
+            "name": "Formato: em linha",
+            "value": "wj-countdown-linha"
+          },
+          {
+            "name": "Formato: faixa fixa no topo",
+            "value": "wj-countdown-fixo"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "titulo",
+        "label": "Chamada",
+        "valueType": "string",
+        "description": "Ex.: A oferta termina em"
+      },
+      {
+        "component": "date-time",
+        "name": "alvo",
+        "label": "Data e hora do fim",
+        "valueType": "date",
+        "required": true,
+        "description": "Quando o contador zera. Usa o fuso do visitante"
+      },
+      {
+        "component": "text",
+        "name": "mensagemFim",
+        "label": "Mensagem após o fim",
+        "valueType": "string",
+        "description": "O que aparece no lugar do contador quando a campanha encerra"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
         "component": "aem-content",
         "name": "reference",
         "label": "Reference"
+      }
+    ]
+  },
+  {
+    "id": "hero-smart",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Estilo",
+        "valueType": "string",
+        "description": "Escolha um estilo. Não escolher nada faz o bloco herdar o ambiente da seção. Os itens de formato são ajuste opcional",
+        "options": [
+          {
+            "name": "Impacto — campanha, escuro e imponente",
+            "value": "wj-r-impacto"
+          },
+          {
+            "name": "Lançamento — cor da marca, alto contraste",
+            "value": "wj-r-lancamento"
+          },
+          {
+            "name": "Institucional — claro e equilibrado",
+            "value": "wj-r-institucional"
+          },
+          {
+            "name": "Editorial — claro, arejado, para leitura",
+            "value": "wj-r-editorial"
+          },
+          {
+            "name": "Discreto — neutro e compacto",
+            "value": "wj-r-discreto"
+          },
+          {
+            "name": "Formato: imagem à direita",
+            "value": "wj-hero-direita"
+          },
+          {
+            "name": "Formato: imagem ao fundo",
+            "value": "wj-hero-fundo"
+          },
+          {
+            "name": "Formato: centralizado",
+            "value": "wj-hero-centro"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "titulo",
+        "label": "Título",
+        "valueType": "string",
+        "required": true,
+        "description": "Até 8 palavras. Fórmula que converte: [resultado] para [público] sem [dor]"
+      },
+      {
+        "component": "richtext",
+        "name": "texto",
+        "label": "Texto e botões",
+        "valueType": "string",
+        "value": "",
+        "description": "Subtítulo e botões. Cada botão em um parágrafo só seu: insira o link e formate em negrito (principal) ou itálico (secundário)"
+      },
+      {
+        "component": "reference",
+        "name": "imagem",
+        "label": "Imagem",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imagemAlt",
+        "label": "Texto alternativo da imagem",
+        "valueType": "string",
+        "description": "Obrigatório para acessibilidade. Descreva a imagem, não repita o título"
       }
     ]
   },
@@ -212,6 +487,103 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "prova-social",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Estilo",
+        "valueType": "string",
+        "description": "Escolha um estilo. Não escolher nada faz o bloco herdar o ambiente da seção. Os itens de formato são ajuste opcional",
+        "options": [
+          {
+            "name": "Impacto — campanha, escuro e imponente",
+            "value": "wj-r-impacto"
+          },
+          {
+            "name": "Lançamento — cor da marca, alto contraste",
+            "value": "wj-r-lancamento"
+          },
+          {
+            "name": "Institucional — claro e equilibrado",
+            "value": "wj-r-institucional"
+          },
+          {
+            "name": "Editorial — claro, arejado, para leitura",
+            "value": "wj-r-editorial"
+          },
+          {
+            "name": "Discreto — neutro e compacto",
+            "value": "wj-r-discreto"
+          },
+          {
+            "name": "Formato: faixa em linha",
+            "value": "wj-prova-linha"
+          },
+          {
+            "name": "Formato: com separadores",
+            "value": "wj-prova-separado"
+          },
+          {
+            "name": "Logos: cor original",
+            "value": "wj-prova-colorido"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "titulo",
+        "label": "Chamada",
+        "valueType": "string",
+        "description": "Opcional. Ex.: Quem já confia na gente"
+      }
+    ]
+  },
+  {
+    "id": "prova-logo",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "imagem",
+        "label": "Logo",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imagemAlt",
+        "label": "Nome da empresa",
+        "valueType": "string",
+        "description": "Vira o texto alternativo. Escreva o nome da empresa, não a palavra logo"
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link (opcional)"
+      }
+    ]
+  },
+  {
+    "id": "prova-numero",
+    "fields": [
+      {
+        "component": "text",
+        "name": "valor",
+        "label": "Número",
+        "valueType": "string",
+        "required": true,
+        "description": "Curto e com unidade. Ex.: 98%, +2 mil, 4,8/5"
+      },
+      {
+        "component": "text",
+        "name": "rotulo",
+        "label": "O que ele significa",
+        "valueType": "string",
+        "required": true,
+        "description": "Ex.: de satisfação, clientes ativos, nota no G2"
       }
     ]
   }

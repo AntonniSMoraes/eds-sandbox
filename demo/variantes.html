@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Webjump Smart Components — matriz de variantes</title>
+  <link rel="stylesheet" href="/styles/wj-tokens.css" id="tema">
+  <link rel="stylesheet" href="/styles/wj-variants.css">
+  <link rel="stylesheet" href="/blocks/hero-smart/hero-smart.css">
+  <link rel="stylesheet" href="/blocks/countdown/countdown.css">
+  <link rel="stylesheet" href="/blocks/prova-social/prova-social.css">
+  <style>
+    body { margin: 0; font-family: var(--wj-fonte); background: #eceef2; color: #16181d; }
+    header { position: sticky; top: 0; z-index: 50; display: flex; flex-wrap: wrap; gap: 12px;
+             align-items: center; padding: 12px 20px; background: #fff; border-bottom: 1px solid #dfe3e8; }
+    header h1 { margin: 0; font-size: 15px; font-weight: 700; }
+    header p { margin: 0; font-size: 13px; color: #5b6270; }
+    button { padding: 6px 14px; border: 1px solid #c9cfd8; border-radius: 999px;
+             background: #fff; font: inherit; font-size: 13px; cursor: pointer; }
+    button[aria-pressed="true"] { background: #16181d; color: #fff; border-color: #16181d; }
+    main { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+    .caso { background: #fff; border: 1px solid #dfe3e8; border-radius: 10px; overflow: hidden; }
+    .caso > figcaption { padding: 8px 14px; font-size: 12px; font-family: ui-monospace, monospace;
+                         color: #5b6270; background: #f7f8fa; border-bottom: 1px solid #dfe3e8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smart Components — receitas</h1>
+    <p>Tema:</p>
+    <button type="button" data-tema="/styles/wj-tokens.css" aria-pressed="true">Padrão</button>
+    <button type="button" data-tema="/styles/temas/wj-tema-varejo.css" aria-pressed="false">Varejo</button>
+    <p id="contagem"></p>
+  </header>
+
+  <main id="casos"></main>
+
+  <script type="module">
+    import decorarHero from '/blocks/hero-smart/hero-smart.js';
+    import decorarCountdown from '/blocks/countdown/countdown.js';
+    import decorarProva from '/blocks/prova-social/prova-social.js';
+
+    const alvo = new Date(Date.now() + 3 * 86400000 + 4 * 3600000).toISOString();
+
+    const heroCru = () => `
+      <div><div><p>Campanhas no ar em horas, não em sprints</p></div></div>
+      <div><div><p>Monte a landing page inteira sem abrir ticket de desenvolvimento.</p>
+        <p class="button-wrapper"><a class="button primary" href="#">Falar com especialista</a></p>
+        <p class="button-wrapper"><a class="button secondary" href="#">Ver planos</a></p></div></div>
+      <div><div><picture><img src="/content/dam/sandbox/hero.png" alt="Ilustração abstrata"></picture></div></div>`;
+
+    const countdownCru = () => `
+      <div><div>A oferta termina em</div></div>
+      <div><div>${alvo}</div></div>
+      <div><div>Campanha encerrada</div></div>`;
+
+    const provaCru = () => `
+      <div><div>Quem já confia na gente</div></div>
+      <div><div><picture><img src="/content/dam/sandbox/unmatched-speed.png" alt="Cliente A"></picture></div></div>
+      <div><div><picture><img src="/content/dam/sandbox/peak-performance.png" alt="Cliente B"></picture></div></div>
+      <div><div>98%</div><div>de satisfação</div></div>
+      <div><div>4,8/5</div><div>nota média no G2</div></div>`;
+
+    const CASOS = [
+      ['hero-smart', 'wj-r-impacto', heroCru, decorarHero],
+      ['hero-smart', 'wj-r-lancamento', heroCru, decorarHero],
+      ['hero-smart', 'wj-r-institucional wj-hero-direita', heroCru, decorarHero],
+      ['hero-smart', 'wj-r-editorial wj-hero-centro', heroCru, decorarHero],
+      ['hero-smart', 'wj-r-discreto', heroCru, decorarHero],
+      ['hero-smart', 'wj-r-impacto wj-hero-fundo', heroCru, decorarHero],
+      ['countdown', 'wj-r-impacto', countdownCru, decorarCountdown],
+      ['countdown', 'wj-r-lancamento wj-countdown-linha', countdownCru, decorarCountdown],
+      ['countdown', 'wj-r-discreto wj-countdown-linha', countdownCru, decorarCountdown],
+      ['prova-social', 'wj-r-institucional', provaCru, decorarProva],
+      ['prova-social', 'wj-r-discreto wj-prova-separado', provaCru, decorarProva],
+      ['prova-social', 'wj-r-impacto wj-prova-colorido', provaCru, decorarProva],
+    ];
+
+    const casos = document.getElementById('casos');
+    CASOS.forEach(([bloco, classes, markup, decorar]) => {
+      const fig = document.createElement('figure');
+      fig.className = 'caso';
+      fig.style.margin = '0';
+      const cap = document.createElement('figcaption');
+      cap.textContent = `${bloco} — ${classes}`;
+      const div = document.createElement('div');
+      div.className = `${bloco} ${classes}`;
+      div.innerHTML = markup();
+      fig.append(cap, div);
+      casos.append(fig);
+      decorar(div);
+    });
+    document.getElementById('contagem').textContent = `${CASOS.length} receitas aplicadas`;
+
+    document.querySelectorAll('[data-tema]').forEach((b) => {
+      b.addEventListener('click', () => {
+        document.getElementById('tema').href = b.dataset.tema;
+        document.querySelectorAll('[data-tema]').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      });
+    });
+  </script>
+</body>
+</html>

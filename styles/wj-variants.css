@@ -1,0 +1,122 @@
+/*
+ * Webjump Smart Components — camada 3: motor de variantes
+ *
+ * Duas camadas de escolha:
+ *
+ *   RECEITA (wj-r-*)  — o que o autor escolhe. Uma decisão, nomeada por situação.
+ *                       É a superfície principal: "Impacto", "Editorial", "Discreto".
+ *   EIXO (wj-*)       — os ingredientes. Ficam na seção, que define o ambiente,
+ *                       e servem de vocabulário interno das receitas.
+ *
+ * Uma receita NÃO declara estilo próprio: ela entra nas mesmas regras dos eixos,
+ * então o valor de cada token mora num lugar só. Adicionar receita é adicionar o
+ * nome dela às listas de seletor abaixo — nunca copiar declarações.
+ *
+ * Três eixos, iguais em TODOS os blocos do catálogo. O autor combina livremente;
+ * o resultado é sempre uma composição válida do design system.
+ *
+ *   Aparência  wj-claro | wj-escuro | wj-marca | wj-neutro
+ *   Densidade  wj-compacto | (padrão) | wj-espacoso
+ *   Ênfase     wj-sutil | (padrão) | wj-destaque
+ *
+ * As classes chegam pela propriedade `classes` do bloco (nativa do EDS: vira
+ * atributo class na div, sem JS). Uma variante nunca declara estilo próprio —
+ * ela só REMAPEIA tokens. É isso que garante que qualquer combinação funcione
+ * e que nenhum bloco precise conhecer as variantes.
+ */
+
+/* ---------- Eixo 1: aparência ---------- */
+
+.wj-claro,
+.wj-r-institucional,
+.wj-r-editorial {
+  --wj-fundo: #fff;
+  --wj-fundo-alt: #f5f6f8;
+  --wj-tinta: #16181d;
+  --wj-tinta-suave: #5b6270;
+  --wj-borda: #e2e5ea;
+}
+
+.wj-neutro,
+.wj-r-discreto {
+  --wj-fundo: #f5f6f8;
+  --wj-fundo-alt: #fff;
+  --wj-tinta: #16181d;
+  --wj-tinta-suave: #5b6270;
+  --wj-borda: #dfe3e8;
+}
+
+.wj-escuro,
+.wj-r-impacto {
+  --wj-fundo: #0f1218;
+  --wj-fundo-alt: #1b2029;
+  --wj-tinta: #f6f7f9;
+  --wj-tinta-suave: #a8b0bd;
+  --wj-borda: #2b323d;
+  --wj-marca-suave: #1b2740;
+}
+
+.wj-marca,
+.wj-r-lancamento {
+  --wj-fundo: var(--wj-marca);
+  --wj-fundo-alt: var(--wj-marca-forte);
+  --wj-tinta: var(--wj-marca-tinta);
+  --wj-tinta-suave: color-mix(in srgb, var(--wj-marca-tinta) 78%, transparent);
+  --wj-borda: color-mix(in srgb, var(--wj-marca-tinta) 24%, transparent);
+}
+
+/* Toda variante de aparência pinta o bloco. Sem isso a troca não teria efeito
+   visível e cada bloco teria que lembrar de aplicar o fundo. */
+.wj-claro,
+.wj-neutro,
+.wj-escuro,
+.wj-marca,
+.wj-r-impacto,
+.wj-r-lancamento,
+.wj-r-institucional,
+.wj-r-editorial,
+.wj-r-discreto {
+  background-color: var(--wj-fundo);
+  color: var(--wj-tinta);
+}
+
+/* ---------- Eixo 2: densidade ---------- */
+
+.wj-compacto,
+.wj-r-discreto {
+  --wj-bloco-py: var(--wj-e-5);
+  --wj-gap: var(--wj-e-4);
+  --wj-medida: 56ch;
+}
+
+.wj-espacoso,
+.wj-r-impacto,
+.wj-r-editorial {
+  --wj-bloco-py: var(--wj-e-8);
+  --wj-gap: var(--wj-e-7);
+}
+
+/* ---------- Eixo 3: ênfase ---------- */
+
+.wj-sutil,
+.wj-r-discreto,
+.wj-r-editorial {
+  --wj-titulo-escala: var(--wj-t-xg);
+  --wj-peso-titulo: var(--wj-peso-medio);
+  --wj-sombra: none;
+}
+
+.wj-destaque,
+.wj-r-impacto,
+.wj-r-lancamento {
+  --wj-titulo-escala: var(--wj-t-3xg);
+  --wj-peso-titulo: var(--wj-peso-forte);
+  --wj-sombra: var(--wj-sombra-g);
+}
+
+/* Padrão da ênfase quando o autor não escolhe nada. Fica em :root para que
+   qualquer bloco possa consumir --wj-titulo-escala sem checar variante. */
+:root {
+  --wj-titulo-escala: var(--wj-t-2xg);
+  --wj-peso-titulo: var(--wj-peso-forte);
+}

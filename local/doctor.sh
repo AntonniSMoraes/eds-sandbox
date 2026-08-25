@@ -34,19 +34,42 @@ step "Universal Editor Service"
 
 step "serviços"
 author_up && ok "author  $AUTHOR_URL" || fail "author fora do ar (npm run local:author)"
-port_busy "$UES_PORT"            && ok "ue      http://localhost:$UES_PORT"       || warn "ue service parado (npm run local:ue)"
-port_busy "$FRANKLIN_PROXY_PORT" && ok "proxy   http://localhost:$FRANKLIN_PROXY_PORT" || warn "franklin-proxy parado (npm start)"
-port_busy "$AEM_TLS_PORT"        && ok "tls     https://localhost:$AEM_TLS_PORT"  || warn "tls-proxy parado (npm start)"
-port_busy "$AEM_CLI_PORT"        && ok "aem up  https://localhost:$AEM_CLI_PORT"  || warn "aem up parado (npm start)"
+port_busy "$UES_PORT"             && ok "ue      https://localhost:$UES_PORT"      || warn "ue service parado (npm run local:ue)"
+port_busy "$FRANKLIN_PROXY_PORT"  && ok "proxy   http://localhost:$FRANKLIN_PROXY_PORT (+ code bus)" || warn "franklin-proxy parado (npm run dev)"
+port_busy "$AEM_TLS_PORT"         && ok "tls     https://localhost:$AEM_TLS_PORT"  || warn "tls-proxy parado (npm run dev)"
+port_busy "$AEM_CLI_PORT"         && ok "aem up  https://localhost:$AEM_CLI_PORT"  || warn "aem up parado (npm run dev)"
 
-step "entrega do conteúdo"
+step "site e conteúdo"
 if author_up; then
-  CODE=$(curl -s -o /dev/null -w '%{http_code}' -u "${AEM_AUTHOR_USER}:${AEM_AUTHOR_PASSWORD}" "${DELIVERY_BASE}/index.html")
-  case "$CODE" in
-    200) ok "${DELIVERY_BASE}/index.html -> 200" ;;
-    404) fail "${DELIVERY_BASE}/index.html -> 404"
-         echo "     o site ainda não existe ou o org/repo não bate com EDS_ORG/EDS_SITE"
-         echo "     rode: npm run local:site-template" ;;
-    *)   fail "${DELIVERY_BASE}/index.html -> $CODE" ;;
-  esac
+  AUTH="-u ${AEM_AUTHOR_USER}:${AEM_AUTHOR_PASSWORD}"
+
+  # shellcheck disable=SC2086
+  CODE=$(curl -s $AUTH -o /dev/null -w '%{http_code}' "${AUTHOR_URL}/content/${EDS_SITE}/index.html")
+  if [ "$CODE" = "200" ]; then
+    ok "/content/${EDS_SITE}/index.html -> 200"
+  else
+    fail "/content/${EDS_SITE}/index.html -> $CODE (rode: npm run local:site-template)"
+  fi
+
+  # shellcheck disable=SC2086
+  PAGE=$(curl -s $AUTH "${AUTHOR_URL}/content/${EDS_SITE}/index.html")
+  echo "$PAGE" | grep -q "urn:adobe:aue:system:aemconnection" \
+    && ok "instrumentação do Universal Editor presente" \
+    || fail "sem meta urn:adobe:aue (rode: npm run local:configure:site)"
+
+  # shellcheck disable=SC2086
+  CFG=$(curl -s $AUTH "${AUTHOR_URL}/conf/${EDS_SITE}/settings/cloudconfigs/edge-delivery-service-configuration/jcr:content.json" \
+    | tr ',' '\n' | grep '"url"' | cut -d'"' -f4)
+  if [ -n "$CFG" ]; then
+    ok "code bus -> $CFG"
+  else
+    fail "code bus sem override: o author vai buscar em *.aem.page e o render estoura 500"
+    echo "     rode: npm run local:configure:site"
+  fi
+fi
+
+step "cadeia completa"
+if port_busy "$AEM_CLI_PORT"; then
+  CODE=$(curl -sk -o /dev/null -w '%{http_code}' "https://localhost:${AEM_CLI_PORT}/")
+  [ "$CODE" = "200" ] && ok "https://localhost:${AEM_CLI_PORT}/ -> 200" || fail "https://localhost:${AEM_CLI_PORT}/ -> $CODE"
 fi

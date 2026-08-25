@@ -1,18 +1,29 @@
 /**
- * Terminador TLS para os serviços que só falam HTTP.
+ * Terminador TLS para o author, que só fala HTTP.
  * O Universal Editor roda em https://experience.adobe.com e o browser bloqueia
- * mixed content, então tanto o author quanto o UE service precisam de https.
+ * mixed content, então tudo que ele toca precisa de https.
  *
- *   https://localhost:{AEM_TLS_PORT}  -> http://localhost:{AEM_AUTHOR_PORT}
- *   https://localhost:{UES_TLS_PORT}  -> http://localhost:{UES_PORT}
+ *   https://localhost:{AEM_TLS_PORT} -> http://localhost:{AEM_AUTHOR_PORT}
+ *
+ * O UE service não entra aqui: ele serve HTTPS nativo (UES_CERT/UES_PRIVATE_KEY).
  */
 import https from 'node:https';
 import http from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { loadConfig, projectRoot } from './config.mjs';
+import { basicAuth, loadConfig, projectRoot } from './config.mjs';
 
 const cfg = loadConfig();
+
+/**
+ * O Universal Editor manda x-aemconnection-authorization vazio contra um author
+ * local: ele só sabe emitir token IMS para instâncias na nuvem. O serviço repassa
+ * esse vazio para o AEM e leva 401.
+ *
+ * Como esta porta só existe para o sandbox e escuta em 127.0.0.1, injetamos a
+ * credencial de admin aqui. É o que destrava a autoria local.
+ */
+const injectedAuth = basicAuth(cfg);
 const certDir = resolve(projectRoot, 'local/certs');
 const cert = resolve(certDir, 'localhost.pem');
 const key = resolve(certDir, 'localhost-key.pem');
@@ -26,13 +37,13 @@ const tls = { cert: readFileSync(cert), key: readFileSync(key) };
 
 const routes = [
   { from: Number(cfg.AEM_TLS_PORT), to: Number(cfg.AEM_AUTHOR_PORT), name: 'aem-author' },
-  { from: Number(cfg.UES_TLS_PORT), to: Number(cfg.UES_PORT), name: 'universal-editor-service' },
 ];
 
 for (const route of routes) {
   const server = https.createServer(tls, (req, res) => {
+    const headers = { ...req.headers, authorization: injectedAuth };
     const upstream = http.request(
-      { host: '127.0.0.1', port: route.to, path: req.url, method: req.method, headers: req.headers },
+      { host: '127.0.0.1', port: route.to, path: req.url, method: req.method, headers },
       (up) => {
         res.writeHead(up.statusCode, up.headers);
         up.pipe(res);

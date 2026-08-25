@@ -17,7 +17,7 @@ step "subindo o author (leva alguns minutos no primeiro boot)"
 
 # Lido pelo com.adobe.aem.wcm.franklin.internal.UniversalEditorSettings:
 # é o endpoint do UE que o author anuncia na meta tag da página.
-export AEM_XWALK_AUE_ENDPOINT="https://localhost:${UES_TLS_PORT}"
+export AEM_XWALK_AUE_ENDPOINT="https://localhost:${UES_PORT}"
 export CQ_PORT="$AEM_AUTHOR_PORT"
 export CQ_RUNMODE="author"
 export CQ_JVM_OPTS="$AEM_JVM_OPTS"

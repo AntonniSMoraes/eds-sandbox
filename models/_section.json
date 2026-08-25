@@ -22,19 +22,126 @@
         {
           "component": "text",
           "name": "name",
-          "label": "Section Name",
-          "description": "The label shown for this section in the Content Tree"
+          "label": "Nome da seção",
+          "description": "Como ela aparece na árvore de conteúdo"
         },
         {
           "component": "multiselect",
           "name": "style",
-          "label": "Style",
+          "label": "Montagem da seção",
+          "description": "Escolha como os blocos se organizam, a cor, o espaço e a altura. Qualquer combinação funciona",
           "options": [
             {
-              "name": "Highlight",
-              "value": "highlight"
+              "name": "Layout: lado a lado (2 colunas)",
+              "value": "wj-sec-2col"
+            },
+            {
+              "name": "Layout: 3 colunas",
+              "value": "wj-sec-3col"
+            },
+            {
+              "name": "Layout: 4 colunas",
+              "value": "wj-sec-4col"
+            },
+            {
+              "name": "Layout: assimétrico (60/40)",
+              "value": "wj-sec-assimetrico"
+            },
+            {
+              "name": "Layout: bento (primeiro maior)",
+              "value": "wj-sec-bento"
+            },
+            {
+              "name": "Layout: sobreposto (um sobre o outro)",
+              "value": "wj-sec-sobreposto"
+            },
+            {
+              "name": "Cor: clara",
+              "value": "wj-claro"
+            },
+            {
+              "name": "Cor: neutra",
+              "value": "wj-neutro"
+            },
+            {
+              "name": "Cor: escura",
+              "value": "wj-escuro"
+            },
+            {
+              "name": "Cor: marca",
+              "value": "wj-marca"
+            },
+            {
+              "name": "Espaço: compacto",
+              "value": "wj-compacto"
+            },
+            {
+              "name": "Espaço: espaçoso",
+              "value": "wj-espacoso"
+            },
+            {
+              "name": "Ênfase: sutil",
+              "value": "wj-sutil"
+            },
+            {
+              "name": "Ênfase: destaque",
+              "value": "wj-destaque"
+            },
+            {
+              "name": "Largura: ocupa a tela inteira",
+              "value": "wj-sec-total"
+            },
+            {
+              "name": "Altura: meia tela",
+              "value": "wj-sec-meia"
+            },
+            {
+              "name": "Altura: tela cheia",
+              "value": "wj-sec-tela"
+            },
+            {
+              "name": "Alinhamento: ao centro",
+              "value": "wj-sec-centro"
+            },
+            {
+              "name": "Alinhamento: ao rodapé",
+              "value": "wj-sec-base"
+            },
+            {
+              "name": "Fundo: escurecer",
+              "value": "wj-sec-escurecer"
+            },
+            {
+              "name": "Fundo: clarear",
+              "value": "wj-sec-clarear"
+            },
+            {
+              "name": "Fundo: fixo ao rolar",
+              "value": "wj-sec-fundo-fixo"
+            },
+            {
+              "name": "Moldura: cantos arredondados",
+              "value": "wj-sec-cantos"
+            },
+            {
+              "name": "Moldura: com sombra",
+              "value": "wj-sec-sombra"
             }
           ]
+        },
+        {
+          "component": "reference",
+          "name": "fundo",
+          "label": "Imagem de fundo",
+          "multi": false,
+          "description": "Opcional. Combine com 'Fundo: escurecer' para o texto continuar legível"
+        },
+        {
+          "component": "text",
+          "name": "ancora",
+          "label": "Âncora",
+          "valueType": "string",
+          "description": "Opcional. Vira o id da seção, para links de menu. Ex.: planos"
         }
       ]
     }
@@ -50,7 +157,11 @@
         "hero",
         "cards",
         "columns",
-        "fragment"
+        "fragment",
+        "hero-smart",
+        "prova-social",
+        "countdown",
+        "aviso"
       ]
     }
   ]
