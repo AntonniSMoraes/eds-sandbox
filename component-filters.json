@@ -31,6 +31,12 @@
     ]
   },
   {
+    "id": "coffe-list",
+    "components": [
+      "coffe-item"
+    ]
+  },
+  {
     "id": "columns",
     "components": [
       "column"

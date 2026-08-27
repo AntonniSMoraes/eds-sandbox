@@ -297,11 +297,11 @@
     ]
   },
   {
-    "id": "coffe-list",
+    "id": "coffe-item",
     "fields": [
       {
         "name": "coffeeCardPicker",
-        "component": "aem-content-fragment",
+        "component": "reference",
         "valueType": "string",
         "label": "Selecione o Fragmento de Café",
         "required": true
