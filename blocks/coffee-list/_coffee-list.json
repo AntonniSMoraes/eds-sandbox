@@ -23,7 +23,7 @@
       "fields": [
         {
           "name": "coffeeCardPicker",
-          "component": "reference",
+          "component": "aem-content-fragment",
           "valueType": "string",
           "label": "Selecione o Fragmento de Café",
           "required": true

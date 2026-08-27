@@ -1,49 +1,73 @@
 export default async function decorate(block) {
-  // 1. Captura o caminho salvo pelo Universal Editor
-  // Às vezes o AEM renderiza como link <a>, às vezes como texto puro
-  const link = block.querySelector('a');
-  const fragmentPath = link ? link.getAttribute('href') : block.textContent.trim();
+  const links = [...block.querySelectorAll('a')];
+  console.log("links: ", links);
 
-  // Limpa o HTML genérico do bloco
   block.innerHTML = '';
 
-  if (!fragmentPath) {
-    block.innerHTML = '<p>☕ Selecione um fragmento de café no painel lateral.</p>';
+  if (links.length === 0) {
+    block.innerHTML = '<p>Selecione um ou mais cafés no painel.</p>';
     return;
   }
 
-  try {
-    // 2. Faz o fetch do fragmento adicionando .json ao final do caminho
-    const response = await fetch(`${fragmentPath}.json`);
-    
-    if (!response.ok) {
-      throw new Error('Falha ao buscar os dados do fragmento');
+  const container = document.createElement('div');
+  container.className = 'coffee-cards-container';
+  block.append(container);
+
+  const fetchPromises = links.map(async (link) => {
+    let fragmentPath = link.getAttribute('href');
+    if (fragmentPath.endsWith('.html')) {
+      fragmentPath = fragmentPath.replace(/\.html$/, '');
     }
 
-    const data = await response.json();
-    
-    // Inspecione o painel do navegador para ver a estrutura exata!
-    console.log('📦 Dados brutos do AEM:', data);
+    try {
+      const response = await fetch(`${fragmentPath}.infinity.json`);
+      if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+      
+      
+      const data = await response.json();
+      const cfData = data['jcr:content']?.data?.master;
+      console.log("resposta: ", cfData);
 
-    // O AEM costuma envelopar os dados em um array dependendo da versão
-    const cfData = data.data ? data.data[0] : data;
+      if (!cfData) return null;
 
-    // 3. Monta o HTML com os campos do seu modelo
-    const card = document.createElement('div');
-    card.className = 'coffee-card';
-    
-    // Nota: O AEM geralmente converte os nomes dos campos para minúsculas com hífen
-    card.innerHTML = `
-      <h3>${cfData['nome-do-cafe'] || cfData.nomeDoCafe || 'Nome não encontrado'}</h3>
-      <p><strong>Origem:</strong> ${cfData['origem-do-cafe'] || cfData.origemDoCafe || 'N/A'}</p>
-      <p><strong>Torra:</strong> ${cfData['nivel-de-torra'] || cfData.nivelDeTorra || 'N/A'}</p>
-      <p class="notas">${cfData['notas-sensoriais-e-descricao'] || cfData.notasSensoriaisEDescricao || ''}</p>
-    `;
+      let nomeDoProdutor = 'Produtor desconhecido';
+      if (cfData.produtorRef && typeof cfData.produtorRef === 'string') {
+        try {
+          const pathProdutor = cfData.produtorRef.replace(/\.html$/, '');
+          const resProdutor = await fetch(`${pathProdutor}.infinity.json`);
+          if (resProdutor.ok) {
+             const dataProdutor = await resProdutor.json();
+             const cfProdutor = dataProdutor['jcr:content']?.data?.master;
+             if (cfProdutor && cfProdutor.nome) nomeDoProdutor = cfProdutor.nome;
+          }
+        } catch (e) {
+          console.warn(`Erro no produtor do café ${cfData.nomeCafe}`);
+        }
+      }
 
-    block.append(card);
+      const card = document.createElement('div');
+      card.className = 'coffee-card';
+      
+      card.innerHTML = `
+        <img src="${cfData.fotoCafe}" alt="${cfData.nomeCafe}" style="max-width: 100%; border-radius: 8px;" />
+        <h3>${cfData.nomeCafe}</h3>
+        <p>${cfData.origemCafe}</p>
+        <p><strong>Produtor:</strong> ${nomeDoProdutor}</p>
+      `;
 
-  } catch (error) {
-    console.error(error);
-    block.innerHTML = '<p>❌ Erro ao carregar as informações do café.</p>';
-  }
+      return card;
+
+    } catch (error) {
+      console.error(`Erro ao carregar o fragmento: ${fragmentPath}`, error);
+      return null;
+    }
+  });
+
+  const cardsProntos = await Promise.all(fetchPromises);
+
+  cardsProntos.forEach(card => {
+    if (card) {
+      container.append(card);
+    }
+  });
 }
