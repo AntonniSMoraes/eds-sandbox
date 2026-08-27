@@ -1,0 +1,14 @@
+.helloworld {
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #fafafa;
+  margin: 2rem 0;
+}
+
+.helloworld h2 {
+  color: #eb1000;
+  margin: 0 0 1rem 0;
+  font-family: sans-serif;
+}

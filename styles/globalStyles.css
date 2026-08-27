@@ -1,0 +1,44 @@
+:root {
+  /* =========================================
+     Cores (Brand palette & Neutrals)
+     ========================================= */
+  --bruma-color-grain: #2E1F1A;
+  --bruma-color-roast: #B4552D;
+  --bruma-color-cream: #F5EFE7;
+  --bruma-color-leaf: #3F5D45;
+  --bruma-color-fog: #6B6560;
+
+  --bruma-color-white: #FFFFFF;
+  --bruma-color-body: #1A1A1A;
+  --bruma-color-border: #E3DCD2;
+
+  /* =========================================
+     Tipografia
+     ========================================= */
+  --bruma-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bruma-font-serif: 'Fraunces', Georgia, serif;
+  
+  --bruma-font-size: 16px;
+  --bruma-line-height-body: 1.6;
+
+  /* =========================================
+     Layout
+     ========================================= */
+  --bruma-header-height: 72px;
+  --bruma-max-width: 1200px;
+
+  /* =========================================
+     Radius (Bordas)
+     ========================================= */
+  --bruma-radius-control: 4px;
+  --bruma-radius-card: 8px;
+
+  /* =========================================
+     Espaçamentos (Spacing)
+     ========================================= */
+  --bruma-space-xs: 8px;
+  --bruma-space-sm: 16px;
+  --bruma-space-md: 24px;
+  --bruma-space-lg: 48px;
+  --bruma-space-xl: 96px;
+}

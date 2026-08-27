@@ -130,6 +130,22 @@
           }
         },
         {
+          "title": "Lista de Café",
+          "id": "coffe-list",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Coffee List",
+                  "model": "coffe-list",
+                  "coffeeCardPicker": ""
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Columns",
           "id": "columns",
           "plugins": {
@@ -171,6 +187,22 @@
                 "template": {
                   "name": "Fragment",
                   "model": "fragment"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Texto de teste",
+          "id": "hello world",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Texto de teste",
+                  "model": "hello world",
+                  "textContent_text": "<p>digita algo</p>"
                 }
               }
             }

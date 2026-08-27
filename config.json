@@ -1,0 +1,8 @@
+{
+  "mappings": [
+    "/content/eds-sandbox/:/"
+  ],
+  "includes": [
+    "/content/eds-sandbox/"
+  ]
+}
