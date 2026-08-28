@@ -1,0 +1,56 @@
+{
+  "definitions": [
+    {
+      "title": "Lista de Café",
+      "id": "coffe-list",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Coffee List",
+              "filter": "coffe-list"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Item de Café",
+      "id": "coffe-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Coffee Item",
+              "model": "coffe-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "coffe-item",
+      "fields": [
+        {
+          "name": "coffeeCardPicker",
+          "component": "reference",
+          "valueType": "string",
+          "label": "Selecione o Fragmento de Café",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "coffe-list",
+      "components": [
+        "coffe-item"
+      ]
+    }
+  ]
+}

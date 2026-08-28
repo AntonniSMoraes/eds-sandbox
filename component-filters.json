@@ -19,13 +19,21 @@
       "hero-smart",
       "prova-social",
       "countdown",
-      "aviso"
+      "aviso",
+      "hello world",
+      "coffe-list"
     ]
   },
   {
     "id": "cards",
     "components": [
       "card"
+    ]
+  },
+  {
+    "id": "coffe-list",
+    "components": [
+      "coffe-item"
     ]
   },
   {

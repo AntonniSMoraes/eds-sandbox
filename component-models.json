@@ -297,6 +297,18 @@
     ]
   },
   {
+    "id": "coffe-item",
+    "fields": [
+      {
+        "name": "coffeeCardPicker",
+        "component": "reference",
+        "valueType": "string",
+        "label": "Selecione o Fragmento de Café",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
@@ -386,6 +398,18 @@
         "component": "aem-content",
         "name": "reference",
         "label": "Reference"
+      }
+    ]
+  },
+  {
+    "id": "hello world",
+    "fields": [
+      {
+        "name": "textContent",
+        "component": "text",
+        "valueType": "string",
+        "label": "Texto que aparece",
+        "required": true
       }
     ]
   },

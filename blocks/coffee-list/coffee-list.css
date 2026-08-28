@@ -1,0 +1,41 @@
+.coffee-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.coffee-cards-container .coffee-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: var(--bruma-color-cream);
+  border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.coffee-cards-container .coffee-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(46, 31, 26, 0.12);
+  border-color: var(--bruma-color-border);
+}
+
+.coffee-cards-container .coffee-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.coffee-cards-container .coffee-card div {
+  padding: 0 10px;
+  color: var(--bruma-color-grain);
+}
+
+.coffee-cards-container .coffee-card h3{
+  margin: 0;
+  padding: 0;
+}
