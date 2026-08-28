@@ -278,6 +278,32 @@
     ]
   },
   {
+    "id": "bruma-dark-header",
+    "fields": [
+      {
+        "name": "smallText",
+        "component": "text",
+        "valueType": "string",
+        "label": "Texto Pequeno (Eyebrow)",
+        "required": true
+      },
+      {
+        "name": "titleText",
+        "component": "text",
+        "valueType": "string",
+        "label": "Título",
+        "required": true
+      },
+      {
+        "name": "subText",
+        "component": "text",
+        "valueType": "string",
+        "label": "Subtítulo / Descrição",
+        "required": false
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
