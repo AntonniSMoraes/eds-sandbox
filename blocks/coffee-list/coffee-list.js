@@ -2,7 +2,6 @@ export default async function decorate(block) {
   const rows = [...block.children];
 
   if (rows.length === 0) {
-    block.innerHTML = '<p>☕ Selecione a lista no painel e adicione os Cafés.</p>';
     return;
   }
 
@@ -44,9 +43,11 @@ export default async function decorate(block) {
       row.className = 'coffee-card';
       row.innerHTML = `
         <img src="${cfData.fotoCafe}" alt="${cfData.nomeCafe}" style="max-width: 100%; border-radius: 8px;" />
-        <h3>${cfData.nomeCafe}</h3>
-        <p>${cfData.origemCafe}</p>
-        <p><strong>Produtor:</strong> ${nomeDoProdutor}</p>
+        <div>
+          <h3>${cfData.nomeCafe}</h3>
+          <p>${cfData.origemCafe}</p>
+          <p><strong>Produtor:</strong> ${nomeDoProdutor}</p>
+        </div>
       `;
 
     } catch (error) {
